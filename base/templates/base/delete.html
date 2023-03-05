@@ -4,14 +4,14 @@
     <a href="{% url 'tasks' %}">&#8592;Back</a>
 </div>
 
-
 <div class="card-form">
     <form action="" method="POST">
         {% csrf_token %}
-        {{form.as_p}}
-        <input class="btn" type="submit" value="Submit">
+        <p>Are you sure to delete this? '{{task}}'</p>
+        <input class="btn" type="submit" value="Delete">
     </form>
 </div>
+
 
 
 {% endblock content %}

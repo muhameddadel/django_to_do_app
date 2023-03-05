@@ -1,30 +1,48 @@
-{% if request.user.is_authenticated %}
-<p>{{request.user}}</p>
-<a href="{% url 'logout' %}">Logout</a>
-{% else %}
-<a href="{% url 'login' %}">Login</a>
-{% endif %}
+{% extends 'base/main.html' %} {% block content %}
+
+<div class="header-bar">
+    <div>
+        <h1>Hello {{request.user|title}}!!</h1>
+        <h3 style="margin:0">You have <i>{{count}}</i> incomplete task{{count|pluralize:"s"}}</h3>
+    </div>
+
+    {% if request.user.is_authenticated %}
+    <a href="{% url 'logout' %}">Logout</a>
+    {% else %}
+    <a href="{% url 'login' %}">Login</a>
+    {% endif %}
+</div>
 
 
+<div id="search-add-wrapper">
+    <form action="" method="GET" style="margin-top: 20px; display: flex;">
+        <input type="text" name="search-area" value="{{search_input}}">
+        <input class="btn" type="submit" value="Search">
+    </form>
+    <a id="add-link" href="{% url 'task-create' %}">&#x2b;</a>
+</div>
 
-<hr>
-<h1>My to do list {{color}}</h1>
-<a href="{% url 'task-create' %}">Add Task</a>
-<table>
-    <tr>
-        <th>Item</th>
-        <th></th>
-        <th></th>
-        <th></th>
-    </tr>
+
+<div id="tasklist" class="task-items-wrapper">
     {% for task in tasks %}
-    <tr>
-        <td>{{task.title}}</td>
-        <td><a href="{% url 'task' task.id %}">View</a></td>
-        <td><a href="{% url 'task-update' task.id %}">Edit</a></td>
-        <td><a href="{% url 'task-delete' task.id %}">Delete</a></td>
-    </tr>
+    <div class="task-wrapper" data-position="{{task.pk}}">
+        <div class="task-title">
+            {% if task.complete %}
+            <div class="task-complete-icon"></div>
+            <i><s><a href="{% url 'task-update' task.id %}">{{task}}</a></s></i> {% else %}
+            <div class="task-incomplete-icon"></div>
+            <a href="{% url 'task-update' task.id %}">{{task}}</a> {% endif %}
+        </div>
+        <div class="task-controls">
+            <a class="delete-link" href="{% url 'task-delete' task.id %}">&#215;</a>
+        </div>
+    </div>
+
     {% empty %}
-        <h3>No items in list</h3>
+    <div style="text-align: center; padding-bottom: 10px; line-height: 1em;">
+        <h3>You do not have any taks yet.</h3>
+        <h3>Create a <a style="text-decoration: none; color: #35bce5;" href="{% url 'task-create' %}">New task</a> ! </h3>
+    </div>
     {% endfor %}
-</table>
+</div>
+{% endblock content %}
